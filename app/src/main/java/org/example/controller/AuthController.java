@@ -10,8 +10,6 @@ import org.example.service.UserDetailsServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +27,7 @@ public class AuthController {
     @PostMapping("auth/v1/signup")
     public ResponseEntity SignUp(@RequestBody UserInfoDto userInfoDto) {
         try {
-            Boolean isSignedUp = userDetailsServiceImp.signUpUser(userInfoDto);
+             Boolean isSignedUp = userDetailsServiceImp.signUpUser(userInfoDto);
             if(Boolean.FALSE.equals(isSignedUp)) {
                 return new ResponseEntity<>("Already Exist", HttpStatus.BAD_REQUEST);
             }
@@ -38,7 +36,7 @@ public class AuthController {
             return new ResponseEntity<>(JwtResponseDto.builder()
                     .accessToken(jwtToken)
                     .token(refreshToken.getToken())
-                    .build(),HttpStatus.OK
+                    .build() , HttpStatus.OK
             );
         }
         catch (Exception ex) {

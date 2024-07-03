@@ -1,6 +1,7 @@
 package org.example.auth;
 
 import lombok.Data;
+import org.example.eventProducer.UserInfoProducer;
 import org.example.repository.UserRepository;
 import org.example.service.UserDetailsServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -25,25 +27,31 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @Data
 public class SecurityConfig {
+    // It defines how authorization and authentication are handled.
+
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserDetailsServiceImp userDetailsServiceImp;
 
+    @Autowired
+    private final UserInfoProducer  userInfoProducer;
+
     @Bean
     @Autowired
     public UserDetailsService userDetailsService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        return new UserDetailsServiceImp(userRepository, passwordEncoder);
+        return new UserDetailsServiceImp(userRepository, passwordEncoder, userInfoProducer);
     }
 
     // FILTER CHAIN.
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable).cors(CorsConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(CorsConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/v1/login", "/auth/v1/refreshToken", "/auth/v1/signUp").permitAll()
+                        .requestMatchers("/auth/v1/login", "/auth/v1/refreshToken", "/auth/v1/signup").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -65,4 +73,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
 }
