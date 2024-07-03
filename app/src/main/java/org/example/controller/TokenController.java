@@ -46,9 +46,8 @@ public class TokenController {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUserInfo)
                 .map(userInfo -> {
-                    String accessToken = jwtService.GenerateToken(userInfo.getUsername());
                     return JwtResponseDto.builder()
-                            .accessToken(accessToken)
+                            .accessToken(jwtService.GenerateToken(userInfo.getUsername()))
                             .token(refreshTokenRequestDto.getToken())
                             .build();
                 }).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));

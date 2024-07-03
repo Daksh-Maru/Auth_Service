@@ -36,7 +36,7 @@ public class JwtService {
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token)); // is the username of user details is equal to username of token and check if token not expired.
     }
 
     public String GenerateToken(String username) {
@@ -49,18 +49,18 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()*1000*60))
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*1))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
     // THE MAIN LOGIN FOR FETCHING CLAIMS --- (TEDIOUS)
-    // <T> FOR DEFINING GENERIC T FOR RETURN TYPE --> STRING/DATE.
-    public <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
+    // <T> FOR DEFINING GENERIC T FOR RETURN <></>YPE --> STRING/DATE.
+    public <T> T extractClaim(String token, Function<Claims, T> claimResolver) { // Function takes Claims and returns any T
         final Claims claims = extractAllClaims(token);
-        return claimResolver.apply(claims);
+        return claimResolver.apply(claims); // this can be used to extract any claim from all the claims.
     }
 
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) { // extracting all claims
         return Jwts
                 .parser()
                 .setSigningKey(getSignKey())
