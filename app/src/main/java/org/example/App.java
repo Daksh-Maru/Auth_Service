@@ -10,12 +10,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = {"org.example.repository"})
-//@ComponentScan(basePackages = {"org.example.controller", "org.example.auth", "org.example.service"})
 public class App {
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
-        // simple game is always appreciated.
     }
 }
